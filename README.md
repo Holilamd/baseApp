@@ -44,28 +44,28 @@ Sistem chat canggih yang terintegrasi secara modular:
 ## 📸 Dokumentasi Menu Aplikasi
 
 ### 1. Halaman Login (Premium Dark Theme Split Screen)
-![Halaman Login](/images/screenshots/login.png)
+![Halaman Login](public/images/screenshots/login.png)
 
 ### 2. Dashboard Portal Utama
-![Dashboard](/images/screenshots/dashboard.png)
+![Dashboard](public/images/screenshots/dashboard.png)
 
 ### 3. User Management
-![User Management](/images/screenshots/user_management.png)
+![User Management](public/images/screenshots/user_management.png)
 
 ### 4. Role Management (Role & Permissions)
-![Role Management](/images/screenshots/role_management.png)
+![Role Management](public/images/screenshots/role_management.png)
 
 ### 5. Menu Management (Daftar Navigasi)
-![Menu Management](/images/screenshots/menu_management.png)
+![Menu Management](public/images/screenshots/menu_management.png)
 
 ### 6. Tenant Settings (Multi-tenant Domain)
-![Tenant Settings](/images/screenshots/tenant_settings.png)
+![Tenant Settings](public/images/screenshots/tenant_settings.png)
 
 ### 7. Chat Room & WebRTC Call (Direct Message, Grup, Kirim File & Panggilan)
-![Chat Room](/images/screenshots/chat_room.png)
+![Chat Room](public/images/screenshots/chat_room.png)
 
 ### 8. Laporan Dokumen (PDF, Excel, Word Export)
-![Reports](/images/screenshots/reports.png)
+![Reports](public/images/screenshots/reports.png)
 
 ---
 
