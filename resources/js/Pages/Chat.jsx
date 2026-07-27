@@ -170,7 +170,7 @@ export default function Chat() {
                             </span>
                             <input
                                 type="text"
-                                className="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-850 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all"
+                                className="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-850 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand transition-all"
                                 placeholder="Search contacts..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -192,7 +192,7 @@ export default function Chat() {
                                     }}
                                     className={`w-full text-left p-4 flex items-center gap-3 transition-colors ${
                                         isActive 
-                                            ? 'bg-blue-600/10 dark:bg-blue-600/15 border-l-4 border-blue-600' 
+                                            ? 'bg-brand-glow border-l-4 border-brand' 
                                             : 'hover:bg-slate-100/50 dark:hover:bg-slate-800/30'
                                     }`}
                                 >
@@ -275,7 +275,7 @@ export default function Chat() {
                                 <div key={m.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                                     <div className={`max-w-[75%] rounded-2xl p-3.5 space-y-1 shadow-sm text-xs ${
                                         isMe 
-                                            ? 'bg-blue-600 text-white rounded-tr-none' 
+                                            ? 'bg-brand text-white rounded-tr-none' 
                                             : 'bg-white border border-slate-200 dark:border-slate-850 dark:bg-slate-900 text-slate-800 dark:text-slate-200 rounded-tl-none'
                                     }`}>
                                         <p className="leading-relaxed whitespace-pre-wrap">{m.text}</p>
@@ -306,14 +306,14 @@ export default function Chat() {
                         <form onSubmit={handleSendMessage} className="flex gap-2">
                             <input
                                 type="text"
-                                className="flex-1 px-4 py-2.5 bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-850 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all"
+                                className="flex-1 px-4 py-2.5 bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-850 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand transition-all"
                                 placeholder="Type a message or trigger replies with 'laravel'..."
                                 value={messageText}
                                 onChange={(e) => setMessageText(e.target.value)}
                             />
                             <button
                                 type="submit"
-                                className="p-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl active:scale-95 transition-all shadow-md shadow-blue-500/10 flex items-center justify-center shrink-0"
+                                className="p-2.5 bg-brand hover:bg-brand-hover text-white rounded-xl active:scale-95 transition-all shadow-md shadow-brand/10 flex items-center justify-center shrink-0"
                             >
                                 <Send className="w-4 h-4" />
                             </button>

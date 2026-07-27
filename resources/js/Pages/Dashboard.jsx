@@ -50,9 +50,9 @@ export default function Dashboard() {
             change: '+12.5%',
             isPositive: true,
             icon: Users,
-            color: 'blue',
-            bgGlow: 'from-blue-500/10 to-indigo-500/5',
-            iconColor: 'text-blue-500 bg-blue-500/10'
+            color: 'brand',
+            bgGlow: 'from-brand-glow to-brand/5',
+            iconColor: 'text-brand bg-brand-glow'
         },
         {
             title: 'Assigned Roles',
@@ -102,9 +102,9 @@ export default function Dashboard() {
             <div className="space-y-8 font-sans">
                 {/* Welcome Hero Banner */}
                 <div className="relative overflow-hidden rounded-3xl bg-slate-900 border border-slate-800 p-8 md:p-10 flex flex-col md:flex-row justify-between items-center gap-6">
-                    <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+                    <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-brand-glow rounded-full blur-[100px] pointer-events-none"></div>
                     <div className="relative z-10 text-center md:text-left space-y-3">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-glow border border-brand/20 text-brand text-xs font-semibold">
                             🚀 Boilerplate Ready
                         </div>
                         <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight">
@@ -117,7 +117,7 @@ export default function Dashboard() {
                     <div className="relative z-10 flex gap-3 shrink-0">
                         <Link
                             href="/chat"
-                            className="flex items-center gap-2 py-2.5 px-5 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 active:scale-[0.98] transition-all shadow-lg shadow-blue-500/10"
+                            className="flex items-center gap-2 py-2.5 px-5 rounded-xl text-sm font-semibold text-white bg-brand hover:bg-brand-hover active:scale-[0.98] transition-all shadow-lg shadow-brand/10"
                         >
                             <MessageSquare className="w-4 h-4" />
                             Open Chat Room
@@ -185,8 +185,8 @@ export default function Dashboard() {
                                 {/* Defs for gradients */}
                                 <defs>
                                     <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.25" />
-                                        <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.0" />
+                                        <stop offset="0%" stopColor="var(--brand-color)" stopOpacity="0.25" />
+                                        <stop offset="100%" stopColor="var(--brand-color)" stopOpacity="0.0" />
                                     </linearGradient>
                                 </defs>
 
@@ -205,7 +205,7 @@ export default function Dashboard() {
                                 <path
                                     d="M 50 150 L 150 90 L 250 110 L 350 40 L 450 65 L 550 15 L 650 5"
                                     fill="none"
-                                    stroke="#3b82f6"
+                                    stroke="var(--brand-color)"
                                     strokeWidth="3.5"
                                     strokeLinecap="round"
                                 />
@@ -217,7 +217,7 @@ export default function Dashboard() {
                                         cx={pt.x}
                                         cy={pt.y}
                                         r={hoveredPoint && hoveredPoint.idx === idx ? "7" : "5"}
-                                        className="fill-white dark:fill-slate-900 stroke-blue-500 stroke-[3px] cursor-pointer transition-all duration-150"
+                                        className="fill-white dark:fill-slate-900 stroke-brand stroke-[3px] cursor-pointer transition-all duration-150"
                                         onMouseEnter={() => setHoveredPoint({ ...pt, idx })}
                                         onMouseLeave={() => setHoveredPoint(null)}
                                     />
@@ -293,7 +293,7 @@ export default function Dashboard() {
                             {recentLogs.map((log) => (
                                 <div key={log.id} className="flex justify-between items-center py-3 first:pt-0 last:pb-0">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                                        <div className="w-2 h-2 rounded-full bg-brand"></div>
                                         <span className="text-xs text-slate-700 dark:text-slate-300 font-medium">
                                             {log.action}
                                         </span>
