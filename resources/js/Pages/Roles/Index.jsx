@@ -115,7 +115,7 @@ export default function Index({ roles, permissions, menus }) {
             render: (role) => (
                 <div className="flex flex-wrap gap-1 max-w-xs">
                     {role.menus.map(m => (
-                        <span key={m.id} className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-semibold bg-blue-50 text-blue-750 dark:bg-blue-950/20 dark:text-blue-400">
+                        <span key={m.id} className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-semibold bg-brand-glow text-brand dark:bg-blue-950/20 dark:text-blue-400">
                             {m.name}
                         </span>
                     ))}
@@ -132,7 +132,7 @@ export default function Index({ roles, permissions, menus }) {
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => openEditModal(role)}
-                        className="text-xs font-semibold text-blue-650 hover:text-blue-700 dark:text-blue-450 transition-colors"
+                        className="text-xs font-semibold text-brand hover:text-brand-hover dark:text-brand transition-colors"
                     >
                         Edit
                     </button>
@@ -161,7 +161,7 @@ export default function Index({ roles, permissions, menus }) {
                 <div>
                     <button
                         onClick={openCreateModal}
-                        className="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition-all flex items-center gap-2 shadow-sm"
+                        className="px-4 py-2 text-sm font-semibold text-white bg-brand rounded-xl hover:bg-brand-hover transition-all flex items-center gap-2 shadow-sm"
                     >
                         <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -302,7 +302,7 @@ export default function Index({ roles, permissions, menus }) {
                                 <button
                                     type="submit"
                                     disabled={processing}
-                                    className="px-4 py-2 text-sm font-medium text-white transition-colors bg-blue-600 rounded-xl hover:bg-blue-700 disabled:opacity-50"
+                                    className="px-4 py-2 text-sm font-medium text-white transition-colors bg-brand rounded-xl hover:bg-brand-hover disabled:opacity-50"
                                 >
                                     {editMode ? 'Save Changes' : 'Create Role'}
                                 </button>

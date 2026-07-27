@@ -129,7 +129,7 @@ export default function Index({ users, roles, filters }) {
             render: (user) => (
                 <div className="flex flex-wrap gap-1">
                     {user.roles.map(role => (
-                        <span key={role.id} className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                        <span key={role.id} className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-brand-glow text-brand dark:bg-blue-900/30 dark:text-blue-400">
                             {role.name}
                         </span>
                     ))}
@@ -146,13 +146,13 @@ export default function Index({ users, roles, filters }) {
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => openEditModal(user)}
-                        className="text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-450 dark:hover:text-blue-300 transition-colors"
+                        className="text-xs font-semibold text-brand hover:text-brand-hover dark:text-blue-450 dark:hover:text-blue-300 transition-colors"
                     >
                         Edit
                     </button>
                     <button
                         onClick={() => openDeleteConfirm(user)}
-                        className="text-xs font-semibold text-red-650 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+                        className="text-xs font-semibold text-red-655 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
                     >
                         Delete
                     </button>
@@ -173,7 +173,7 @@ export default function Index({ users, roles, filters }) {
                 <div>
                     <button
                         onClick={openCreateModal}
-                        className="px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition-all flex items-center gap-2 shadow-sm shadow-blue-500/10"
+                        className="px-4 py-2 text-sm font-semibold text-white bg-brand rounded-xl hover:bg-brand-hover transition-all flex items-center gap-2 shadow-sm shadow-brand/10"
                     >
                         <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -267,7 +267,7 @@ export default function Index({ users, roles, filters }) {
                                                     type="checkbox"
                                                     checked={data.roles.includes(role.id)}
                                                     onChange={() => toggleRole(role.id)}
-                                                    className="rounded border-slate-300 text-blue-600 focus:ring-blue-550 focus:ring-offset-0 dark:bg-slate-950 dark:border-slate-800"
+                                                    className="rounded border-slate-300 text-brand focus:ring-brand focus:ring-offset-0 dark:bg-slate-950 dark:border-slate-800"
                                                 />
                                                 <span className="text-xs font-medium text-slate-700 dark:text-slate-300">{role.name}</span>
                                             </label>
@@ -288,7 +288,7 @@ export default function Index({ users, roles, filters }) {
                                 <button
                                     type="submit"
                                     disabled={processing}
-                                    className="px-4 py-2 text-sm font-medium text-white transition-colors bg-blue-600 rounded-xl hover:bg-blue-700 disabled:opacity-50"
+                                    className="px-4 py-2 text-sm font-medium text-white transition-colors bg-brand rounded-xl hover:bg-brand-hover disabled:opacity-50"
                                 >
                                     {editMode ? 'Save Changes' : 'Create User'}
                                 </button>

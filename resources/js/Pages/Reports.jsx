@@ -83,7 +83,7 @@ export default function Reports() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <h4 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-blue-500 transition-colors">
+                                    <h4 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-brand transition-colors">
                                         {card.title}
                                     </h4>
                                     <p className="text-xs text-slate-400 leading-relaxed">
@@ -96,7 +96,7 @@ export default function Reports() {
                             <div className="pt-6">
                                 <a
                                     href={card.downloadUrl}
-                                    className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 active:scale-[0.98] border border-slate-800 dark:border-slate-700/80 transition-all shadow-sm"
+                                    className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-brand hover:bg-brand-hover active:scale-[0.98] transition-all shadow-sm shadow-brand/10 border border-transparent"
                                 >
                                     <Download className="w-4 h-4" />
                                     Download File
