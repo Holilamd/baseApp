@@ -138,3 +138,7 @@ Akses portal admin melalui browser di alamat: **`http://localhost:8000`**
 - **Nama**: Kholil
 - **Email**: [holil.amd@gmail.com](mailto:holil.amd@gmail.com)
 - **No. HP / WhatsApp**: +62 819-1370-7336
+
+---
+
+⭐ Jika boilerplate ini bermanfaat bagi Anda, mohon dukungannya dengan memberikan **Star** pada repositori ini! Terima kasih banyak!
