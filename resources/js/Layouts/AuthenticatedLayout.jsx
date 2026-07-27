@@ -15,6 +15,15 @@ export default function AuthenticatedLayout({ header, children }) {
     const [expandedMenus, setExpandedMenus] = useState({});
     const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
 
+    useEffect(() => {
+        // Automatically collapse sidebar on smaller viewports (tablet & mobile)
+        if (typeof window !== 'undefined') {
+            if (window.innerWidth < 1024) {
+                setSidebarOpen(false);
+            }
+        }
+    }, []);
+
     const themesList = [
         { name: 'Classic Blue', class: 'theme-blue', color: 'bg-blue-600' },
         { name: 'Emerald Garden', class: 'theme-emerald', color: 'bg-emerald-600' },
@@ -22,10 +31,10 @@ export default function AuthenticatedLayout({ header, children }) {
         { name: 'Sunset Rose', class: 'theme-rose', color: 'bg-rose-600' },
         { name: 'Warm Amber', class: 'theme-amber', color: 'bg-amber-600' },
     ];
-    
+
     const [darkMode, setDarkMode] = useState(() => {
         if (typeof window !== 'undefined') {
-            return localStorage.getItem('theme') === 'dark' || 
+            return localStorage.getItem('theme') === 'dark' ||
                 (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
         }
         return false;
@@ -51,7 +60,7 @@ export default function AuthenticatedLayout({ header, children }) {
     useEffect(() => {
         const themes = ['theme-emerald', 'theme-violet', 'theme-rose', 'theme-amber'];
         themes.forEach(t => document.documentElement.classList.remove(t));
-        
+
         if (colorTheme !== 'theme-blue') {
             document.documentElement.classList.add(colorTheme);
         }
@@ -64,7 +73,7 @@ export default function AuthenticatedLayout({ header, children }) {
     const addToast = (message, type = 'success') => {
         const id = Date.now();
         setToasts(prev => [...prev, { id, message, type }]);
-        
+
         // Auto-remove after 4 seconds
         setTimeout(() => {
             setToasts(prev => prev.filter(t => t.id !== id));
@@ -95,18 +104,17 @@ export default function AuthenticatedLayout({ header, children }) {
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex transition-colors duration-250">
             {/* Sidebar Overlay for Mobile */}
-            {!sidebarOpen && (
-                <div 
-                    className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm lg:hidden"
-                    onClick={() => setSidebarOpen(true)}
+            {sidebarOpen && (
+                <div
+                    className="fixed inset-0 z-40 bg-slate-900/30 lg:hidden"
+                    onClick={() => setSidebarOpen(false)}
                 ></div>
             )}
 
             {/* Sidebar */}
-            <aside 
-                className={`fixed lg:sticky top-0 left-0 z-50 h-screen bg-slate-900 border-r border-slate-800 text-slate-350 transition-all duration-300 flex flex-col ${
-                    sidebarOpen ? 'w-64' : 'w-20 -translate-x-full lg:translate-x-0'
-                }`}
+            <aside
+                className={`fixed lg:sticky top-0 left-0 z-50 h-screen bg-slate-900 border-r border-slate-800 text-slate-350 transform transition-all duration-300 flex flex-col ${sidebarOpen ? 'w-64 translate-x-0' : 'w-20 -translate-x-full lg:translate-x-0'
+                    }`}
             >
                 {/* Brand / Tenant Header */}
                 <div className="h-16 flex items-center justify-between px-5 border-b border-slate-800 bg-slate-950">
@@ -117,7 +125,7 @@ export default function AuthenticatedLayout({ header, children }) {
                         {sidebarOpen && (
                             <div className="flex flex-col">
                                 <span className="font-semibold text-white truncate text-sm leading-tight">
-                                    {tenant?.name || 'KlinikApp'}
+                                    {tenant?.name || 'MainApp'}
                                 </span>
                                 <span className="text-[10px] text-emerald-450 font-medium tracking-wide uppercase">
                                     {tenant?.domain || 'Single Tenant'}
@@ -132,7 +140,7 @@ export default function AuthenticatedLayout({ header, children }) {
                     {auth.menus && auth.menus.map((menu) => {
                         const hasChildren = menu.children && menu.children.length > 0;
                         const isExpanded = expandedMenus[menu.id];
-                        const isActive = window.location.pathname === menu.url || 
+                        const isActive = window.location.pathname === menu.url ||
                             (menu.children && menu.children.some(child => window.location.pathname === child.url));
 
                         return (
@@ -141,21 +149,20 @@ export default function AuthenticatedLayout({ header, children }) {
                                     <>
                                         <button
                                             onClick={() => toggleSubmenu(menu.id)}
-                                            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-slate-800 hover:text-white ${
-                                                isActive ? 'text-white bg-slate-800/60' : 'text-slate-400'
-                                            }`}
+                                            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-slate-800 hover:text-white ${isActive ? 'text-white bg-slate-800/60' : 'text-slate-400'
+                                                }`}
                                         >
                                             <div className="flex items-center gap-3.5">
                                                 <MenuIcon name={menu.icon} className="w-5 h-5 shrink-0" />
                                                 {sidebarOpen && <span>{menu.name}</span>}
                                             </div>
                                             {sidebarOpen && (
-                                                <Icons.ChevronRight 
-                                                    className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`} 
+                                                <Icons.ChevronRight
+                                                    className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`}
                                                 />
                                             )}
                                         </button>
-                                        
+
                                         {sidebarOpen && isExpanded && (
                                             <div className="pl-6 space-y-1 mt-1 transition-all">
                                                 {menu.children.map((child) => {
@@ -164,11 +171,10 @@ export default function AuthenticatedLayout({ header, children }) {
                                                         <Link
                                                             key={child.id}
                                                             href={child.url}
-                                                            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
-                                                                isChildActive 
-                                                                    ? 'bg-brand-glow text-brand font-semibold' 
-                                                                    : 'text-slate-450 hover:bg-slate-800/50 hover:text-slate-200'
-                                                            }`}
+                                                            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${isChildActive
+                                                                ? 'bg-brand-glow text-brand font-semibold'
+                                                                : 'text-slate-450 hover:bg-slate-800/50 hover:text-slate-200'
+                                                                }`}
                                                         >
                                                             <span>{child.name}</span>
                                                         </Link>
@@ -180,11 +186,10 @@ export default function AuthenticatedLayout({ header, children }) {
                                 ) : (
                                     <Link
                                         href={menu.url || '#'}
-                                        className={`flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                                            isActive 
-                                                ? 'bg-brand text-white shadow-md shadow-brand/10' 
-                                                : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-                                        }`}
+                                        className={`flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${isActive
+                                            ? 'bg-brand text-white shadow-md shadow-brand/10'
+                                            : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                                            }`}
                                     >
                                         <MenuIcon name={menu.icon} className="w-5 h-5 shrink-0" />
                                         {sidebarOpen && <span>{menu.name}</span>}
@@ -243,8 +248,8 @@ export default function AuthenticatedLayout({ header, children }) {
 
                             {themeDropdownOpen && (
                                 <>
-                                    <div 
-                                        className="fixed inset-0 z-10" 
+                                    <div
+                                        className="fixed inset-0 z-10"
                                         onClick={() => setThemeDropdownOpen(false)}
                                     ></div>
                                     <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl dark:bg-slate-900 py-2 z-20">
@@ -258,9 +263,8 @@ export default function AuthenticatedLayout({ header, children }) {
                                                     setColorTheme(t.class);
                                                     setThemeDropdownOpen(false);
                                                 }}
-                                                className={`w-full text-left px-4 py-2 text-xs text-slate-700 dark:text-slate-350 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center gap-2.5 ${
-                                                    colorTheme === t.class ? 'font-bold bg-slate-50 dark:bg-slate-800/80 text-brand' : ''
-                                                }`}
+                                                className={`w-full text-left px-4 py-2 text-xs text-slate-700 dark:text-slate-350 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center gap-2.5 ${colorTheme === t.class ? 'font-bold bg-slate-50 dark:bg-slate-800/80 text-brand' : ''
+                                                    }`}
                                             >
                                                 <span className={`w-3 h-3 rounded-full ${t.color}`}></span>
                                                 {t.name}
@@ -299,8 +303,8 @@ export default function AuthenticatedLayout({ header, children }) {
 
                             {userDropdownOpen && (
                                 <>
-                                    <div 
-                                        className="fixed inset-0 z-10" 
+                                    <div
+                                        className="fixed inset-0 z-10"
                                         onClick={() => setUserDropdownOpen(false)}
                                     ></div>
                                     <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-100 rounded-xl shadow-xl dark:bg-slate-900 dark:border-slate-800 py-1.5 z-20">
@@ -340,13 +344,12 @@ export default function AuthenticatedLayout({ header, children }) {
             {/* Floating Toast Notification Container */}
             <div className="fixed top-6 right-6 z-[9999] flex flex-col gap-3 w-full max-w-sm pointer-events-none">
                 {toasts.map((toast) => (
-                    <div 
+                    <div
                         key={toast.id}
-                        className={`p-4 rounded-2xl border backdrop-blur-md shadow-2xl flex items-center justify-between gap-3 pointer-events-auto animate-slide-in transition-all duration-300 ${
-                            toast.type === 'success' 
-                                ? 'bg-emerald-50/90 border-emerald-200 text-emerald-800 dark:bg-emerald-950/90 dark:border-emerald-800/80 dark:text-emerald-300' 
-                                : 'bg-red-50/90 border-red-200 text-red-800 dark:bg-red-950/90 dark:border-red-800/80 dark:text-red-300'
-                        }`}
+                        className={`p-4 rounded-2xl border backdrop-blur-md shadow-2xl flex items-center justify-between gap-3 pointer-events-auto animate-slide-in transition-all duration-300 ${toast.type === 'success'
+                            ? 'bg-emerald-50/90 border-emerald-200 text-emerald-800 dark:bg-emerald-950/90 dark:border-emerald-800/80 dark:text-emerald-300'
+                            : 'bg-red-50/90 border-red-200 text-red-800 dark:bg-red-950/90 dark:border-red-800/80 dark:text-red-300'
+                            }`}
                     >
                         <div className="flex items-center gap-2.5">
                             {toast.type === 'success' ? (
@@ -356,7 +359,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             )}
                             <span className="text-xs font-semibold">{toast.message}</span>
                         </div>
-                        <button 
+                        <button
                             onClick={() => removeToast(toast.id)}
                             className="p-1 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors shrink-0"
                         >

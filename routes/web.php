@@ -28,9 +28,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Tenant/Settings');
     })->name('tenant.settings');
 
-    Route::get('/chat', function () {
-        return Inertia::render('Chat');
-    })->name('chat');
+    Route::get('/chat', [\App\Http\Controllers\ChatController::class, 'index'])->name('chat');
+    Route::get('/chat/messages/{receiverId}', [\App\Http\Controllers\ChatController::class, 'fetchMessages'])->name('chat.messages');
+    Route::post('/chat/messages', [\App\Http\Controllers\ChatController::class, 'sendMessage'])->name('chat.messages.send');
+    Route::post('/chat/upload', [\App\Http\Controllers\ChatController::class, 'uploadFile'])->name('chat.messages.upload');
+    Route::post('/chat/groups', [\App\Http\Controllers\ChatController::class, 'createGroup'])->name('chat.groups.create');
 
     // Reports page
     Route::get('/reports', function () {
