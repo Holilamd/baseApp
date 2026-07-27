@@ -58,6 +58,33 @@ export default function AuthenticatedLayout({ header, children }) {
         localStorage.setItem('color-theme', colorTheme);
     }, [colorTheme]);
 
+    const { flash } = usePage().props;
+    const [toasts, setToasts] = useState([]);
+
+    const addToast = (message, type = 'success') => {
+        const id = Date.now();
+        setToasts(prev => [...prev, { id, message, type }]);
+        
+        // Auto-remove after 4 seconds
+        setTimeout(() => {
+            setToasts(prev => prev.filter(t => t.id !== id));
+        }, 4000);
+    };
+
+    const removeToast = (id) => {
+        setToasts(prev => prev.filter(t => t.id !== id));
+    };
+
+    // Watch Inertia flash messages
+    useEffect(() => {
+        if (flash?.success) {
+            addToast(flash.success, 'success');
+        }
+        if (flash?.error) {
+            addToast(flash.error, 'error');
+        }
+    }, [flash]);
+
     const toggleSubmenu = (menuId) => {
         setExpandedMenus(prev => ({
             ...prev,
@@ -308,6 +335,35 @@ export default function AuthenticatedLayout({ header, children }) {
                 <main className="flex-1 overflow-y-auto p-6 md:p-8">
                     {children}
                 </main>
+            </div>
+
+            {/* Floating Toast Notification Container */}
+            <div className="fixed top-6 right-6 z-[9999] flex flex-col gap-3 w-full max-w-sm pointer-events-none">
+                {toasts.map((toast) => (
+                    <div 
+                        key={toast.id}
+                        className={`p-4 rounded-2xl border backdrop-blur-md shadow-2xl flex items-center justify-between gap-3 pointer-events-auto animate-slide-in transition-all duration-300 ${
+                            toast.type === 'success' 
+                                ? 'bg-emerald-50/90 border-emerald-200 text-emerald-800 dark:bg-emerald-950/90 dark:border-emerald-800/80 dark:text-emerald-300' 
+                                : 'bg-red-50/90 border-red-200 text-red-800 dark:bg-red-950/90 dark:border-red-800/80 dark:text-red-300'
+                        }`}
+                    >
+                        <div className="flex items-center gap-2.5">
+                            {toast.type === 'success' ? (
+                                <Icons.CheckCircle2 className="w-5 h-5 text-emerald-650 dark:text-emerald-400 shrink-0" />
+                            ) : (
+                                <Icons.AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 shrink-0" />
+                            )}
+                            <span className="text-xs font-semibold">{toast.message}</span>
+                        </div>
+                        <button 
+                            onClick={() => removeToast(toast.id)}
+                            className="p-1 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors shrink-0"
+                        >
+                            <Icons.X className="w-4 h-4" />
+                        </button>
+                    </div>
+                ))}
             </div>
         </div>
     );
