@@ -97,7 +97,7 @@ Buka file `.env` dan sesuaikan koneksi database Anda, serta tentukan waktu pembe
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=hadiri
+DB_DATABASE=
 DB_USERNAME=root
 DB_PASSWORD=
 
@@ -137,4 +137,4 @@ Akses portal admin melalui browser di alamat: **`http://localhost:8000`**
 
 - **Nama**: Kholil
 - **Email**: [holil.amd@gmail.com](mailto:holil.amd@gmail.com)
-- **No. HP / WhatsApp**: +62 813-1815-5813
+- **No. HP / WhatsApp**: +62 819-1370-7336
