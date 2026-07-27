@@ -1,3 +1,39 @@
 @import "tailwindcss";
 
 @variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-brand: var(--brand-color);
+  --color-brand-hover: var(--brand-hover-color);
+  --color-brand-glow: var(--brand-glow-color);
+}
+
+:root {
+  --brand-color: #2563eb; /* blue-600 */
+  --brand-hover-color: #1d4ed8; /* blue-700 */
+  --brand-glow-color: rgba(37, 99, 235, 0.15);
+}
+
+.theme-emerald {
+  --brand-color: #059669; /* emerald-600 */
+  --brand-hover-color: #047857; /* emerald-700 */
+  --brand-glow-color: rgba(5, 150, 105, 0.15);
+}
+
+.theme-violet {
+  --brand-color: #7c3aed; /* violet-600 */
+  --brand-hover-color: #6d28d9; /* violet-700 */
+  --brand-glow-color: rgba(124, 58, 237, 0.15);
+}
+
+.theme-rose {
+  --brand-color: #e11d48; /* rose-600 */
+  --brand-hover-color: #be123c; /* rose-700 */
+  --brand-glow-color: rgba(225, 29, 72, 0.15);
+}
+
+.theme-amber {
+  --brand-color: #d97706; /* amber-600 */
+  --brand-hover-color: #b45309; /* amber-700 */
+  --brand-glow-color: rgba(217, 119, 6, 0.15);
+}

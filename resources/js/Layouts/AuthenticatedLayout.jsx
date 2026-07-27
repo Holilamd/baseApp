@@ -13,6 +13,15 @@ export default function AuthenticatedLayout({ header, children }) {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [userDropdownOpen, setUserDropdownOpen] = useState(false);
     const [expandedMenus, setExpandedMenus] = useState({});
+    const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
+
+    const themesList = [
+        { name: 'Classic Blue', class: 'theme-blue', color: 'bg-blue-600' },
+        { name: 'Emerald Garden', class: 'theme-emerald', color: 'bg-emerald-600' },
+        { name: 'Royal Violet', class: 'theme-violet', color: 'bg-violet-600' },
+        { name: 'Sunset Rose', class: 'theme-rose', color: 'bg-rose-600' },
+        { name: 'Warm Amber', class: 'theme-amber', color: 'bg-amber-600' },
+    ];
     
     const [darkMode, setDarkMode] = useState(() => {
         if (typeof window !== 'undefined') {
@@ -31,6 +40,23 @@ export default function AuthenticatedLayout({ header, children }) {
             localStorage.setItem('theme', 'light');
         }
     }, [darkMode]);
+
+    const [colorTheme, setColorTheme] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('color-theme') || 'theme-blue';
+        }
+        return 'theme-blue';
+    });
+
+    useEffect(() => {
+        const themes = ['theme-emerald', 'theme-violet', 'theme-rose', 'theme-amber'];
+        themes.forEach(t => document.documentElement.classList.remove(t));
+        
+        if (colorTheme !== 'theme-blue') {
+            document.documentElement.classList.add(colorTheme);
+        }
+        localStorage.setItem('color-theme', colorTheme);
+    }, [colorTheme]);
 
     const toggleSubmenu = (menuId) => {
         setExpandedMenus(prev => ({
@@ -58,7 +84,7 @@ export default function AuthenticatedLayout({ header, children }) {
                 {/* Brand / Tenant Header */}
                 <div className="h-16 flex items-center justify-between px-5 border-b border-slate-800 bg-slate-950">
                     <div className="flex items-center gap-3 overflow-hidden">
-                        <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-lg shrink-0 shadow-md shadow-blue-500/20">
+                        <div className="w-9 h-9 rounded-xl bg-brand flex items-center justify-center text-white font-bold text-lg shrink-0 shadow-md shadow-brand/20">
                             {tenant?.name ? tenant.name.charAt(0) : 'K'}
                         </div>
                         {sidebarOpen && (
@@ -113,7 +139,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                                             href={child.url}
                                                             className={`flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
                                                                 isChildActive 
-                                                                    ? 'bg-blue-600/10 text-blue-400 font-semibold' 
+                                                                    ? 'bg-brand-glow text-brand font-semibold' 
                                                                     : 'text-slate-450 hover:bg-slate-800/50 hover:text-slate-200'
                                                             }`}
                                                         >
@@ -129,7 +155,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                         href={menu.url || '#'}
                                         className={`flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
                                             isActive 
-                                                ? 'bg-blue-600 text-white shadow-md shadow-blue-600/10' 
+                                                ? 'bg-brand text-white shadow-md shadow-brand/10' 
                                                 : 'text-slate-400 hover:bg-slate-800 hover:text-white'
                                         }`}
                                     >
@@ -178,6 +204,46 @@ export default function AuthenticatedLayout({ header, children }) {
 
                     {/* Right Toolbar / User Options */}
                     <div className="flex items-center gap-4">
+                        {/* Theme Palette Switcher */}
+                        <div className="relative">
+                            <button
+                                onClick={() => setThemeDropdownOpen(!themeDropdownOpen)}
+                                className="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors"
+                                aria-label="Choose Theme"
+                            >
+                                <Icons.Palette className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                            </button>
+
+                            {themeDropdownOpen && (
+                                <>
+                                    <div 
+                                        className="fixed inset-0 z-10" 
+                                        onClick={() => setThemeDropdownOpen(false)}
+                                    ></div>
+                                    <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl dark:bg-slate-900 py-2 z-20">
+                                        <div className="px-4 py-1.5 border-b border-slate-100 dark:border-slate-800">
+                                            <p className="text-[10px] uppercase font-bold text-slate-400">Select Accent Color</p>
+                                        </div>
+                                        {themesList.map((t) => (
+                                            <button
+                                                key={t.class}
+                                                onClick={() => {
+                                                    setColorTheme(t.class);
+                                                    setThemeDropdownOpen(false);
+                                                }}
+                                                className={`w-full text-left px-4 py-2 text-xs text-slate-700 dark:text-slate-350 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center gap-2.5 ${
+                                                    colorTheme === t.class ? 'font-bold bg-slate-50 dark:bg-slate-800/80 text-brand' : ''
+                                                }`}
+                                            >
+                                                <span className={`w-3 h-3 rounded-full ${t.color}`}></span>
+                                                {t.name}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </>
+                            )}
+                        </div>
+
                         {/* Theme Toggle Switch */}
                         <button
                             onClick={() => setDarkMode(!darkMode)}
