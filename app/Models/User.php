@@ -47,4 +47,9 @@ class User extends Authenticatable
     {
         return $this->roles->flatMap->permissions->contains('slug', $permissionSlug);
     }
+
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
+    }
 }

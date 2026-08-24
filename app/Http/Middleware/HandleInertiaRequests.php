@@ -38,21 +38,47 @@ class HandleInertiaRequests extends Middleware
             $permissions = $roles->flatMap->permissions->pluck('slug')->unique()->values()->all();
             
             // Fetch top-level menus authorized for user's roles with their submenus
-            $menus = \App\Models\Menu::whereHas('roles', function($query) use ($roles) {
-                $query->whereIn('roles.id', $roles->pluck('id'));
-            })
-            ->whereNull('parent_id')
-            ->with(['children' => function($query) use ($roles) {
-                $query->whereHas('roles', function($q) use ($roles) {
-                    $q->whereIn('roles.id', $roles->pluck('id'));
-                })->orderBy('order', 'asc');
-            }])
-            ->orderBy('order', 'asc')
-            ->get();
+            $menus = \App\Models\Menu::whereNull('parent_id')
+                ->where(function ($query) use ($roles) {
+                    $query->whereHas('roles', function ($q) use ($roles) {
+                        $q->whereIn('roles.id', $roles->pluck('id'));
+                    })
+                    ->orWhereHas('children.roles', function ($q) use ($roles) {
+                        $q->whereIn('roles.id', $roles->pluck('id'));
+                    });
+                })
+                ->with(['children' => function($query) use ($roles) {
+                    $query->whereHas('roles', function($q) use ($roles) {
+                        $q->whereIn('roles.id', $roles->pluck('id'));
+                    })->orderBy('order', 'asc');
+                }])
+                ->orderBy('order', 'asc')
+                ->get();
         }
 
         $tenantId = session('tenant_id') ?? ($user ? $user->tenant_id : 1);
         $tenant = \App\Models\Tenant::find($tenantId);
+        
+        $pendingApprovals = [];
+        if ($request->user()) {
+            $user = $request->user();
+            $query = \App\Models\Approval::where('tenant_id', $user->tenant_id)
+                ->where('status', 'PENDING');
+                
+            if ($user->branch_id) {
+                $query->where('branch_id', $user->branch_id);
+            }
+            
+            $approvals = $query->get();
+            $pendingApprovals = [
+                'customer' => $approvals->where('approvable_type', \App\Models\Customer::class)->count(),
+                'savings' => $approvals->where('approvable_type', \App\Models\SavingsAccount::class)->count(),
+                'cash_deposit' => $approvals->filter(fn($a) => $a->approvable_type === \App\Models\SavingTransaction::class && ($a->new_data['transaction_type'] ?? '') === 'DEPOSIT')->count(),
+                'cash_withdrawal' => $approvals->filter(fn($a) => $a->approvable_type === \App\Models\SavingTransaction::class && ($a->new_data['transaction_type'] ?? '') === 'WITHDRAWAL')->count(),
+                'transfer' => $approvals->filter(fn($a) => $a->approvable_type === \App\Models\SavingTransaction::class && ($a->new_data['transaction_type'] ?? '') === 'TRANSFER')->count(),
+                'total' => $approvals->count()
+            ];
+        }
 
         return [
             ...parent::share($request),
@@ -60,6 +86,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $user,
                 'permissions' => $permissions,
                 'menus' => $menus,
+                'pending_approvals' => $pendingApprovals,
             ],
             'tenant' => $tenant,
             'flash' => [

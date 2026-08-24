@@ -4,7 +4,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import DataTable from '@/Components/DataTable';
 import ConfirmDialog from '@/Components/ConfirmDialog';
 
-export default function Index({ users, roles, filters }) {
+export default function Index({ users, roles, branches, filters, auth }) {
     const [search, setSearch] = useState(filters.search || '');
     const [sortBy, setSortBy] = useState(filters.sort_by || 'id');
     const [sortDir, setSortDir] = useState(filters.sort_dir || 'desc');
@@ -21,6 +21,7 @@ export default function Index({ users, roles, filters }) {
         email: '',
         password: '',
         roles: [],
+        branch_id: '',
     });
 
     // Handle search query changes with debounce
@@ -68,6 +69,7 @@ export default function Index({ users, roles, filters }) {
             email: user.email,
             password: '',
             roles: user.roles.map(r => r.id),
+            branch_id: user.branch_id || '',
         });
         setSelectedUser(user);
         setEditMode(true);
@@ -257,6 +259,23 @@ export default function Index({ users, roles, filters }) {
                                     />
                                     {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password}</p>}
                                 </div>
+
+                                {!auth.user.branch_id && (
+                                    <div>
+                                        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Branch</label>
+                                        <select
+                                            value={data.branch_id}
+                                            onChange={e => setData('branch_id', e.target.value)}
+                                            className="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:bg-slate-950 dark:border-slate-800 dark:text-white"
+                                        >
+                                            <option value="">Pusat (Super Admin)</option>
+                                            {branches.map(branch => (
+                                                <option key={branch.id} value={branch.id}>{branch.code} - {branch.name}</option>
+                                            ))}
+                                        </select>
+                                        {errors.branch_id && <p className="text-xs text-red-500 mt-1">{errors.branch_id}</p>}
+                                    </div>
+                                )}
 
                                 <div>
                                     <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">Assign Roles</label>

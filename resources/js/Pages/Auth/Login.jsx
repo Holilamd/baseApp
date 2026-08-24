@@ -31,14 +31,14 @@ export default function Login({ status, canResetPassword }) {
                 {/* Background glowing effects */}
                 <div className="absolute top-[-20%] left-[-20%] w-[80%] h-[80%] rounded-full bg-blue-600/10 blur-[120px] pointer-events-none animate-pulse duration-[6000ms]"></div>
                 <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-violet-600/10 blur-[100px] pointer-events-none"></div>
-                
+
                 {/* Header branding */}
                 <div className="relative z-10 flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/20">
                         <Sparkles className="w-5 h-5 text-white" />
                     </div>
                     <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
-                        Hadiri Boilerplate
+                        App Boilerplate
                     </span>
                 </div>
 
@@ -80,7 +80,7 @@ export default function Login({ status, canResetPassword }) {
 
                 {/* Footer brand label */}
                 <div className="relative z-10 text-xs text-slate-500">
-                    &copy; 2026 Hadiri Systems. All rights reserved.
+                    &copy; 2026 Main App Systems. All rights reserved.
                 </div>
             </div>
 

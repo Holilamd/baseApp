@@ -15,6 +15,11 @@ class Tenant extends Model
         'logo',
         'domain',
         'status',
+        'settings',
+    ];
+
+    protected $casts = [
+        'settings' => 'array',
     ];
 
     public function users(): HasMany

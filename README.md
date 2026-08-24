@@ -111,7 +111,7 @@ Perintah ini akan membuat semua struktur tabel (termasuk modul chat, grup, dan i
 php artisan migrate --seed
 ```
 *Akun Login Admin Bawaan:*
-- **Email**: `admin@hadiri.com`
+- **Email**: `admin@bmt.com`
 - **Password**: `password`
 
 ### 6. Hubungkan Folder Upload Publik

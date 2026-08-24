@@ -21,6 +21,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'permission' => \App\Http\Middleware\CheckPermission::class,
+            'tenant' => \App\Http\Middleware\CheckTenant::class,
+            'branch_operational' => \App\Http\Middleware\CheckBranchOperational::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

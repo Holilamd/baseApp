@@ -43,14 +43,14 @@ export default function Index({ roles, permissions, menus }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (editMode) {
-            router.put(route('roles.update', selectedRole.id), data, {
+            put(route('roles.update', selectedRole.id), {
                 onSuccess: () => {
                     setIsFormOpen(false);
                     reset();
                 }
             });
         } else {
-            router.post(route('roles.store'), data, {
+            post(route('roles.store'), {
                 onSuccess: () => {
                     setIsFormOpen(false);
                     reset();

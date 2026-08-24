@@ -125,7 +125,7 @@ export default function AuthenticatedLayout({ header, children }) {
                         {sidebarOpen && (
                             <div className="flex flex-col">
                                 <span className="font-semibold text-white truncate text-sm leading-tight">
-                                    {tenant?.name || 'MainApp'}
+                                    {tenant?.name || 'BMT-CORE'}
                                 </span>
                                 <span className="text-[10px] text-emerald-450 font-medium tracking-wide uppercase">
                                     {tenant?.domain || 'Single Tenant'}
@@ -139,9 +139,24 @@ export default function AuthenticatedLayout({ header, children }) {
                 <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-1.5 scrollbar-thin scrollbar-thumb-slate-800">
                     {auth.menus && auth.menus.map((menu) => {
                         const hasChildren = menu.children && menu.children.length > 0;
-                        const isExpanded = expandedMenus[menu.id];
-                        const isActive = window.location.pathname === menu.url ||
-                            (menu.children && menu.children.some(child => window.location.pathname === child.url));
+                        const currentFullUrl = window.location.pathname + window.location.search;
+                        const isActive = currentFullUrl === menu.url || window.location.pathname === menu.url ||
+                            (menu.children && menu.children.some(child => {
+                                const childUrl = child.url?.replace(/^.*\/\/[^\/]+/, '');
+                                return currentFullUrl === childUrl || window.location.pathname === child.url;
+                            }));
+                        const isExpanded = expandedMenus[menu.id] !== undefined ? expandedMenus[menu.id] : isActive;
+
+                        let parentBadgeCount = 0;
+                        if (hasChildren && auth.pending_approvals) {
+                            menu.children.forEach(child => {
+                                if (child.url?.includes('type=customer')) parentBadgeCount += auth.pending_approvals.customer || 0;
+                                else if (child.url?.includes('type=savings')) parentBadgeCount += auth.pending_approvals.savings || 0;
+                                else if (child.url?.includes('type=cash_deposit')) parentBadgeCount += auth.pending_approvals.cash_deposit || 0;
+                                else if (child.url?.includes('type=cash_withdrawal')) parentBadgeCount += auth.pending_approvals.cash_withdrawal || 0;
+                                else if (child.url?.includes('type=transfer')) parentBadgeCount += auth.pending_approvals.transfer || 0;
+                            });
+                        }
 
                         return (
                             <div key={menu.id} className="space-y-1">
@@ -157,26 +172,53 @@ export default function AuthenticatedLayout({ header, children }) {
                                                 {sidebarOpen && <span>{menu.name}</span>}
                                             </div>
                                             {sidebarOpen && (
-                                                <Icons.ChevronRight
-                                                    className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`}
-                                                />
+                                                <div className="flex items-center gap-2">
+                                                    {parentBadgeCount > 0 && (
+                                                        <span className="flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-red-500 text-white text-[10px] font-bold shadow-sm">
+                                                            {parentBadgeCount}
+                                                        </span>
+                                                    )}
+                                                    <Icons.ChevronRight
+                                                        className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`}
+                                                    />
+                                                </div>
                                             )}
                                         </button>
 
                                         {sidebarOpen && isExpanded && (
                                             <div className="pl-6 space-y-1 mt-1 transition-all">
                                                 {menu.children.map((child) => {
-                                                    const isChildActive = window.location.pathname === child.url;
+                                                    const childUrlWithoutOrigin = child.url?.replace(/^.*\/\/[^\/]+/, '');
+                                                    const currentUrl = window.location.pathname + window.location.search;
+                                                    const isChildActive = window.location.pathname === child.url || currentUrl === childUrlWithoutOrigin;
+                                                    
+                                                    let badgeCount = 0;
+                                                    if (auth.pending_approvals) {
+                                                        if (child.url?.includes('type=customer')) badgeCount = auth.pending_approvals.customer || 0;
+                                                        else if (child.url?.includes('type=savings')) badgeCount = auth.pending_approvals.savings || 0;
+                                                        else if (child.url?.includes('type=cash_deposit')) badgeCount = auth.pending_approvals.cash_deposit || 0;
+                                                        else if (child.url?.includes('type=cash_withdrawal')) badgeCount = auth.pending_approvals.cash_withdrawal || 0;
+                                                        else if (child.url?.includes('type=transfer')) badgeCount = auth.pending_approvals.transfer || 0;
+                                                    }
+                                                    const showBadge = badgeCount > 0;
                                                     return (
                                                         <Link
                                                             key={child.id}
                                                             href={child.url}
-                                                            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${isChildActive
+                                                            className={`flex items-center justify-between gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${isChildActive
                                                                 ? 'bg-brand-glow text-brand font-semibold'
-                                                                : 'text-slate-450 hover:bg-slate-800/50 hover:text-slate-200'
+                                                                : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                                                                 }`}
                                                         >
-                                                            <span>{child.name}</span>
+                                                            <div className="flex items-center gap-3">
+                                                                <span className={`w-1.5 h-1.5 rounded-full ${isChildActive ? 'bg-brand' : 'bg-slate-600'}`}></span>
+                                                                <span>{child.name}</span>
+                                                            </div>
+                                                            {showBadge && (
+                                                                <span className="flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-red-500 text-white text-[10px] font-bold shadow-sm">
+                                                                    {badgeCount}
+                                                                </span>
+                                                            )}
                                                         </Link>
                                                     );
                                                 })}
@@ -186,13 +228,16 @@ export default function AuthenticatedLayout({ header, children }) {
                                 ) : (
                                     <Link
                                         href={menu.url || '#'}
-                                        className={`flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${isActive
+                                        className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${isActive
                                             ? 'bg-brand text-white shadow-md shadow-brand/10'
                                             : 'text-slate-400 hover:bg-slate-800 hover:text-white'
                                             }`}
                                     >
-                                        <MenuIcon name={menu.icon} className="w-5 h-5 shrink-0" />
-                                        {sidebarOpen && <span>{menu.name}</span>}
+                                        <div className="flex items-center gap-3.5">
+                                            <MenuIcon name={menu.icon} className="w-5 h-5 shrink-0" />
+                                            {sidebarOpen && <span>{menu.name}</span>}
+                                        </div>
+                                        {/* Remove the parent badge for Approvals since it doesn't exist anymore */}
                                     </Link>
                                 )}
                             </div>
@@ -204,7 +249,7 @@ export default function AuthenticatedLayout({ header, children }) {
                 <div className="p-4 border-t border-slate-800 bg-slate-950/40 text-center">
                     {sidebarOpen ? (
                         <p className="text-[11px] text-slate-500">
-                            &copy; 2026 Hadiri Systems
+                            &copy; 2026 Main App Systems
                         </p>
                     ) : (
                         <span className="text-[11px] text-slate-650">H</span>

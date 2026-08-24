@@ -51,9 +51,9 @@ class RoleController extends Controller implements HasMiddleware
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'permissions' => ['required', 'array'],
+            'permissions' => ['nullable', 'array'],
             'permissions.*' => ['exists:permissions,id'],
-            'menus' => ['required', 'array'],
+            'menus' => ['nullable', 'array'],
             'menus.*' => ['exists:menus,id'],
         ]);
 
@@ -61,8 +61,8 @@ class RoleController extends Controller implements HasMiddleware
             'name' => $validated['name'],
         ]);
 
-        $role->permissions()->sync($validated['permissions']);
-        $role->menus()->sync($validated['menus']);
+        $role->permissions()->sync($validated['permissions'] ?? []);
+        $role->menus()->sync($validated['menus'] ?? []);
 
         return redirect()->back()->with('success', 'Role created successfully.');
     }
@@ -74,9 +74,9 @@ class RoleController extends Controller implements HasMiddleware
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'permissions' => ['required', 'array'],
+            'permissions' => ['nullable', 'array'],
             'permissions.*' => ['exists:permissions,id'],
-            'menus' => ['required', 'array'],
+            'menus' => ['nullable', 'array'],
             'menus.*' => ['exists:menus,id'],
         ]);
 
@@ -84,8 +84,8 @@ class RoleController extends Controller implements HasMiddleware
             'name' => $validated['name'],
         ]);
 
-        $role->permissions()->sync($validated['permissions']);
-        $role->menus()->sync($validated['menus']);
+        $role->permissions()->sync($validated['permissions'] ?? []);
+        $role->menus()->sync($validated['menus'] ?? []);
 
         return redirect()->back()->with('success', 'Role updated successfully.');
     }

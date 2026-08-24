@@ -27,17 +27,19 @@ class UserController extends Controller implements HasMiddleware
             new Middleware('permission:users.delete', only: ['destroy']),
         ];
     }
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request): Response
     {
         $search = $request->input('search', '');
         $sortBy = $request->input('sort_by', 'id');
         $sortDir = $request->input('sort_dir', 'desc');
 
+        $user = auth()->user();
+
         $users = User::query()
             ->with('roles')
+            ->when($user->branch_id, function ($query) use ($user) {
+                $query->where('branch_id', $user->branch_id);
+            })
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
@@ -50,10 +52,12 @@ class UserController extends Controller implements HasMiddleware
 
         // Get all roles available for role assignment in this tenant
         $roles = Role::orderBy('name')->get();
+        $branches = \App\Models\Branch::where('tenant_id', $user->tenant_id)->get();
 
         return Inertia::render('Users/Index', [
             'users' => $users,
             'roles' => $roles,
+            'branches' => $branches,
             'filters' => [
                 'search' => $search,
                 'sort_by' => $sortBy,
@@ -62,9 +66,6 @@ class UserController extends Controller implements HasMiddleware
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -80,12 +81,15 @@ class UserController extends Controller implements HasMiddleware
             'password' => ['required', 'string', 'min:8'],
             'roles' => ['required', 'array'],
             'roles.*' => ['exists:roles,id'],
+            'branch_id' => ['nullable', 'exists:branches,id']
         ]);
 
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
+            'branch_id' => auth()->user()->branch_id ?? $validated['branch_id'] ?? null,
+            'tenant_id' => auth()->user()->tenant_id,
         ]);
 
         $user->roles()->sync($validated['roles']);
@@ -93,9 +97,6 @@ class UserController extends Controller implements HasMiddleware
         return redirect()->back()->with('success', 'User created successfully.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, User $user): RedirectResponse
     {
         $validated = $request->validate([
@@ -110,12 +111,18 @@ class UserController extends Controller implements HasMiddleware
             'password' => ['nullable', 'string', 'min:8'],
             'roles' => ['required', 'array'],
             'roles.*' => ['exists:roles,id'],
+            'branch_id' => ['nullable', 'exists:branches,id']
         ]);
 
         $updateData = [
             'name' => $validated['name'],
             'email' => $validated['email'],
         ];
+
+        // Only super admin can change branch_id
+        if (!auth()->user()->branch_id && array_key_exists('branch_id', $validated)) {
+            $updateData['branch_id'] = $validated['branch_id'];
+        }
 
         if (!empty($validated['password'])) {
             $updateData['password'] = Hash::make($validated['password']);

@@ -36,7 +36,7 @@ class ReportController extends Controller
 
         $data = [
             'title' => 'System Active Users Report',
-            'tenantName' => 'MainApp Administration',
+            'tenantName' => 'BMT-CORE Administration',
             'exporter' => auth()->user() ? auth()->user()->name : 'System Automator',
             'date' => now()->format('d M Y, H:i'),
             'logoUrl' => $logoBase64, // Pass base64 image logo directly
@@ -96,7 +96,7 @@ class ReportController extends Controller
         $sections = [
             [
                 'type' => 'text',
-                'text' => 'This document lists the active security access roles registered in the MainApp system along with their permission policy parameters.',
+                'text' => 'This document lists the active security access roles registered in the BMT-CORE system along with their permission policy parameters.',
                 'style' => ['italic' => true, 'color' => '475569', 'spaceAfter' => 200]
             ],
             [
@@ -125,7 +125,7 @@ class ReportController extends Controller
 
         $sections[] = [
             'type' => 'text',
-            'text' => 'End of Security Policy Audit Report. Generated automatically by MainApp Boilerplate.',
+            'text' => 'End of Security Policy Audit Report. Generated automatically by BMT-CORE Boilerplate.',
             'style' => ['bold' => true, 'size' => 9, 'color' => '94A3B8', 'spaceAfter' => 100]
         ];
 
